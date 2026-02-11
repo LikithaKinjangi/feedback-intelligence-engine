@@ -24,6 +24,13 @@ AI-powered system that transforms raw user feedback into structured, prioritized
 - README.md
 
 ---
+## Day 2 Progress
+
+### Sentiment Analyzer Tool
+- Created standalone `sentiment_analyzer.py`
+- Returns structured JSON output
+- Simulates function-calling behavior
+- Validated with sample feedback
 
 ## Current Status
 Agent 1 (Feedback Analyzer) under development.
