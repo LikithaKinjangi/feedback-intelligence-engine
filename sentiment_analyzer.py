@@ -26,9 +26,14 @@ Feedback:
     )
 
     content = response["message"]["content"]
-    return json.loads(content)
+    print("RAW MODEL OUTPUT:")
+    print(content) 
+    # Extract JSON block safely
+    start = content.find("{")
+    end = content.rfind("}") + 1
+    json_string = content[start:end]
 
-
+    return json.loads(json_string)
 if __name__ == "__main__":
     sample_feedback = "The app crashes every time I try to upload a file."
 
