@@ -1,6 +1,7 @@
 # Feedback Intelligence Engine
 
-AI-powered system that transforms raw user feedback into structured, prioritized product insights.
+AI-powered spwd
+ystem that transforms raw user feedback into structured, prioritized product insights.
 
 ---
 
