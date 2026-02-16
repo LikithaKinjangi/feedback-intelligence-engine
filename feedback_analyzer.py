@@ -98,6 +98,18 @@ Feedback:
         json_string = json_string.replace("\n", " ")
         json_string = json_string.replace(", }", " }")
         json_string = json_string.replace(",}", "}")
+        json_string = json_string.replace(": None", ': "None"')
+        json_string = json_string.replace(": Positive", ': "Positive"')
+        json_string = json_string.replace(": Neutral", ': "Neutral"')
+        json_string = json_string.replace(": Negative", ': "Negative"')
+        json_string = json_string.replace(": High", ': "High"')
+        json_string = json_string.replace(": Medium", ': "Medium"')
+        json_string = json_string.replace(": Low", ': "Low"')
+        json_string = json_string.replace(": Bug", ': "Bug"')
+        json_string = json_string.replace(": Feature Request", ': "Feature Request"')
+        json_string = json_string.replace(": UX Issue", ': "UX Issue"')
+        json_string = json_string.replace(": Performance", ': "Performance"')
+        json_string = json_string.replace(": Other", ': "Other"')
 
         # Ensure closing brace exists
         if not json_string.strip().endswith("}"):
@@ -119,6 +131,19 @@ Feedback:
     # -------------------------
     # Post-Processing Cleanup
     # -------------------------
+
+    # Normalize invalid categorical values
+    if parsed.get("category") == "None":
+        parsed["category"] = "Other"
+
+    if parsed.get("priority") == "None":
+        parsed["priority"] = "Low"
+
+    if parsed.get("sentiment") == "None":
+        parsed["sentiment"] = "Neutral"
+
+    if parsed.get("problem") in [None, "", "None"]:
+        parsed["problem"] = "None"
 
     # Ensure "problem" field is never empty, null, or blank
     problem_value = parsed.get("problem")
