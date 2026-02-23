@@ -208,6 +208,73 @@ Through this project, I learned:
 
 ---
 
+## 🚀 Running the Project Locally
+
+This project runs entirely on a local machine using a locally hosted LLM via Ollama.
+
+### 1️⃣ Prerequisites
+
+- Python 3.10+
+- Ollama installed
+- Llama 3 model pulled locally
+
+**Install the model:**
+
+```bash
+ollama pull llama3
+```
+
+### 2️⃣ Clone the Repository
+
+```bash
+git clone https://github.com//feedback-intelligence-engine.git
+cd feedback-intelligence-engine
+```
+
+### 3️⃣ Create Virtual Environment
+
+```bash
+python -m venv .venv
+source .venv/bin/activate   # macOS / Linux
+```
+
+### 4️⃣ Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5️⃣ Start Ollama
+
+```bash
+ollama serve
+```
+
+### 6️⃣ Run the Streamlit App
+
+```bash
+streamlit run app.py
+```
+
+Then open: **http://localhost:8501**
+
+---
+
+> ⚠️ **Important Note**
+> This system uses a local LLM via Ollama and does not depend on external APIs.
+> It is intended for local experimentation and architectural learning.
+
+---
+
+## 🔮 Future Enhancements
+
+- [ ] Replace rule-based theme grouping with embedding-based clustering
+- [ ] Add persistent storage for historical feedback
+- [ ] Deploy UI to a cloud platform
+- [ ] Add real-time analytics dashboard
+- [ ] Add API layer for external integrations
+
+---
 ## 👤 Author
 
 An individual exploring AI systems and multi-agent product design.
