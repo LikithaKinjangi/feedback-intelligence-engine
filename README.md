@@ -9,7 +9,7 @@
 
 View the interactive system architecture:
 
-👉 https://likithakinjangi.github.io/feedback-intelligence-engine/architecture-diagram.html
+👉 [View Interactive Architecture Diagram](https://likithakinjangi.github.io/feedback-intelligence-engine/architecture-diagram.html)
 ## 📌 Project Overview
 
 The Feedback Intelligence Engine takes unstructured user feedback and processes it through a multi-agent pipeline to generate:
