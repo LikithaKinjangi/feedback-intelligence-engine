@@ -4,6 +4,12 @@
 *This project is part of my journey as a Product enthusiast exploring AI systems, focused on understanding how LLMs can be orchestrated into reliable, structured product intelligence pipelines.*
 
 ---
+
+## 📐 Architecture
+
+View the interactive system architecture:
+
+👉 https://likithakinjangi.github.io/feedback-intelligence-engine/architecture-diagram.html
 ## 📌 Project Overview
 
 The Feedback Intelligence Engine takes unstructured user feedback and processes it through a multi-agent pipeline to generate:
