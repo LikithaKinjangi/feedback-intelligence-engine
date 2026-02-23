@@ -1,10 +1,9 @@
 # main_pipeline.py
 # End-to-End Integration: Agent 1 → Agent 2
-
-from feedback_analyzer import analyze_feedback
-from patterndetector import detect_patterns
-from insight_generator import generate_insights
-from evaluation_engine import evaluate_system
+from agents.feedback_analyzer import analyze_feedback
+from agents.patterndetector import detect_patterns
+from agents.insight_generator import generate_insights
+from agents.evaluation_engine import evaluate_system
 
 
 def run_pipeline(raw_feedback_list):
@@ -75,10 +74,10 @@ if __name__ == "__main__":
 from typing import TypedDict, List, Dict
 from langgraph.graph import StateGraph
 
-from feedback_analyzer import analyze_feedback
-from patterndetector import detect_patterns
-from insight_generator import generate_insights
-from evaluation_engine import evaluate_system
+from agents.feedback_analyzer import analyze_feedback
+from agents.patterndetector import detect_patterns
+from agents.insight_generator import generate_insights
+from agents.evaluation_engine import evaluate_system
 
 
 # =========================================================
