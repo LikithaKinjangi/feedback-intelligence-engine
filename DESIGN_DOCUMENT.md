@@ -1,92 +1,56 @@
-# Design Document  
-## Feedback Intelligence Engine
-
-## 1. Objective
-The objective of this system is to convert unstructured user feedback into structured, machine-readable insights that can support product decision-making.
-
-The system is designed using an agentic architecture that separates reasoning, tools, and orchestration logic.
-
-## 2. Problem Statement
-Product teams receive large volumes of raw user feedback such as:
-1.App reviews  
-2.Support tickets  
-3.Survey responses  
-
-Manually analyzing this feedback is:
-1.Time-consuming  
-2.Inconsistent  
-3.Difficult to scale  
-This system automates:
-1.Sentiment detection  
-2.Problem extraction  
-3.Categorization  
-4.Priority assignment  
-The output is structured JSON for downstream processing.
-## 3. System Architecture Overview
-Raw User Feedback (Text)
-↓
-Agent 1 – Feedback Analyzer
-↓
-Structured JSON Output
-↓
-(Future) Agent 2 – Pattern Detector
-↓
-(Future) Agent 3 – Insight Generator
-Current implementation focuses on Agent 1.
+# 🧠 Feedback Intelligence Engine – Design Document
 
 ---
 
-## 4. Architectural Layers
-### 4.1 LLM Layer (Reasoning Engine)
-- Model: Llama3 (via Ollama)
-- Responsibility: Perform classification and structured reasoning
-- Does not manage control flow
-The LLM is treated as a reasoning component only.
-### 4.2 Tool Layer (Modular Design)
-The system follows a tool-based conceptual architecture.
-#### 4.2.1 Sentiment Tool
-Tool Name: `analyze_sentiment`
-Input:
-- feedback_text (string)
-Output:
-```json
-{
-  "sentiment": "Positive | Neutral | Negative"
-}
-```
-Purpose:
-1.Demonstrate tool abstraction
-2.Enforce structured JSON output
-3.Simulate function calling behavior.
+## 1. 🎯 Problem Statement
 
-## 4.2.2 Category Tool (Architectural Mapping)
-Tool Name: categorize_feedback
-Input:
-feedback_text (string)
-{
-  "category": "Bug | Feature Request | UX Issue | Performance | Other"
-}
-Purpose:
-- Classify feedback into predefined taxonomy
-``(Currently implemented within Agent 1 prompt.)``
-## 4.2.3 Priority Tool (Architectural Mapping)
-Tool Name: assign_priority
-Input:
-- feedback_text (string)
-Output:
-```json
-{
-  "priority": "High | Medium | Low"
-}
+Modern products receive large volumes of unstructured user feedback. Manually reading, classifying, and prioritizing that feedback is time-consuming and inconsistent.
+
+This system transforms raw feedback into:
+
+- **Structured classifications**
+- **Pattern-level insights**
+- **Executive-ready product recommendations**
+- **Product health evaluation signals**
+
+> **Objective:** Simulate how a product team could use AI agents to support structured decision-making.
+
+---
+
+## 2. 🗺️ System Overview
+
+The system is designed as a **multi-agent AI pipeline**. Each agent has a clearly defined responsibility.
+
+### High-Level Flow
+
 ```
-## 5. Agent 1 – Feedback Analyzer
-Responsibilities:
-	•	Construct structured prompts
-	•	Invoke LLM via Ollama
-	•	Enforce strict JSON schema output
-	•	Parse response into Python dictionary
-	•	Handle batch feedback inputs
-Output Format:
+Raw Feedback
+    → Agent 1 – Feedback Analyzer
+    → Agent 2 – Pattern Detector
+    → Agent 3 – Insight Generator
+    → Evaluation Layer
+    → UI (Streamlit Dashboard)
+```
+
+> Each layer builds progressively on the previous layer's output.
+
+---
+
+## 3. 🤖 Agent Design
+
+### 3.1 Agent 1 – Feedback Analyzer
+
+**Purpose:** Convert raw text feedback into structured data.
+
+For each feedback input, the system extracts:
+
+- Problem
+- Sentiment
+- Category
+- Priority
+
+**Example Output Structure:**
+
 ```json
 {
   "problem": "...",
@@ -95,16 +59,147 @@ Output Format:
   "priority": "..."
 }
 ```
-### 6 Execution Flow
-	1.	Raw feedback is provided as input.
-	2.	Python constructs a structured prompt.
-	3.	Prompt is sent to the LLM via ollama.chat().
-	4.	The LLM performs reasoning and returns structured JSON.
-	5.	Python parses JSON into a dictionary.
-	6.	Structured output is stored for downstream use.
-### 7. Design Principles
-	1.Structured outputs instead of free text
-	2.Clear separation between reasoning and control logic
-	3.Modular tool abstraction
-	4.Machine readable JSON output
-	5.Model agnostic architecture
+
+> This ensures downstream agents operate on structured inputs rather than raw text.
+
+---
+
+### 3.2 Agent 2 – Pattern Detector
+
+**Purpose:** Identify trends across multiple structured feedback entries.
+
+Responsibilities:
+
+- Compute category distribution
+- Compute priority distribution
+- Count high-priority items
+- Detect recurring themes *(e.g., Upload Issues, Performance Issues, Authentication Issues)*
+
+> This layer shifts from individual analysis to batch-level intelligence.
+
+---
+
+### 3.3 Agent 3 – Insight Generator
+
+**Purpose:** Convert detected patterns into product-level insights.
+
+It generates:
+
+- Executive summary
+- Key risk areas
+- Dominant themes
+- Recommended actions
+
+> This simulates how a product manager would summarize insights for stakeholders.
+
+---
+
+### 3.4 Evaluation Layer
+
+**Purpose:** Provide a system-level health signal.
+
+Evaluates:
+
+| Signal | Description |
+|---|---|
+| Risk Level | Low / Medium / High |
+| High-Priority Count | Number of critical issues |
+| Bug Volume | Total bug-related feedback |
+| Signal Strength | Overall data quality score |
+| Theme Concentration | Dominance of a single theme |
+
+> This creates a decision-support snapshot for leadership.
+
+---
+
+## 4. ⚙️ Orchestration Architecture
+
+The system supports two orchestration approaches.
+
+### 4.1 Manual Python Orchestration
+
+A sequential pipeline where agents are executed step-by-step.
+
+Used for:
+
+- Learning control flow
+- Understanding dependencies
+- Building foundational orchestration logic
+
+### 4.2 LangGraph-Based Orchestration
+
+- Nodes represent agents
+- Edges define execution flow
+- State acts as shared memory between nodes
+
+This separates:
+
+- **Business logic** — defined inside agents
+- **Control flow** — defined in the graph
+
+> This design improves modularity and scalability.
+
+---
+
+## 5. 🖥️ UI Layer
+
+The system includes a **Streamlit-based dashboard** that enables:
+
+- Real-time feedback input
+- Pattern metrics visualization
+- Risk-level indicators
+- Product memo generation
+- System evaluation summary
+
+> The UI transforms backend intelligence into an interactive, demo-ready experience.
+
+---
+
+## 6. 🧭 Design Principles
+
+The following principles guide the system:
+
+- **Clear separation** of agent responsibilities
+- **Structured output** between layers
+- **Modular and scalable** orchestration
+- **Human-readable** insight generation
+- **Portfolio-ready** architecture
+- **Learning-first** engineering approach
+
+---
+
+## 7. 📦 Current Scope
+
+The system currently:
+
+- [x] Processes individual feedback inputs
+- [x] Structures feedback into standardized fields
+- [x] Detects recurring themes
+- [x] Generates insight memos
+- [x] Evaluates product risk signals
+- [x] Displays results through a Streamlit interface
+
+---
+
+## 8. 🚀 Future Enhancements
+
+Potential improvements include:
+
+- [ ] Embedding-based semantic clustering
+- [ ] Database integration for feedback storage
+- [ ] Cloud deployment
+- [ ] Real-time monitoring dashboards
+- [ ] Automated prioritization scoring
+
+---
+
+## 9. 📍 Project Positioning
+
+This project represents a hands-on exploration of:
+
+- AI agent orchestration
+- Product intelligence pipelines
+- Insight generation systems
+- Applied AI in product management
+
+> It reflects a **learning-driven, implementation-focused** approach to understanding agent-based architectures.

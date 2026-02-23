@@ -1,42 +1,208 @@
-# Feedback Intelligence Engine
-AI-powered ystem that transforms raw user feedback into structured, prioritized product insights.
-## Day 1 Progress
-### Environment Setup
-- Python installed
-- Git initialized
-- Ollama installed
-- Llama3 model downloaded
-### First Model Call
-- Successfully connected Python to local LLM (Ollama)
-- Executed working model call via `ollama.chat()`
-### Files Created
-- python_basics.py
-- local_llm_test.py
-- feedback_analyzer.py
-- .gitignore
-- README.md
-## Day 2 Progress
-### Sentiment Analyzer Tool
-- Created standalone `sentiment_analyzer.py`
-- Returns structured JSON output
-- Simulates function-calling behavior
-- Validated with sample feedback
-## Current Status
-Agent 1 (Feedback Analyzer) under development.
-## Day 4 Progress – LangGraph Foundation
-### LangGraph Study
-Studied the core concepts of LangGraph orchestration:
-- **Node**: A unit of work that takes the current state as input, performs processing, and returns an updated state.
-- **Edge**: Defines execution flow between nodes (linear or conditional routing).
-- **State**: A structured dictionary that acts as shared context passed between nodes during a single graph execution.
-- **State Management**: Ensuring each node updates only its relevant fields without overwriting the entire state.
-### Prototype Implementation
-- Built a "Hello World" LangGraph example.
-- Implemented linear node flow.
-- Implemented conditional routing between nodes.
-- Verified state propagation across nodes.
-### Key Learning
-LangGraph separates:
-- Business logic (inside nodes)
-- Control flow (defined by graph structure)
-This enables modular, scalable multi-agent orchestration.
+# 🧠 Feedback Intelligence Engine
+> AI-powered system that transforms raw user feedback into structured, prioritized product insights using a multi-agent architecture.
+
+*This project is part of my journey as a Product enthusiast exploring AI systems, focused on understanding how LLMs can be orchestrated into reliable, structured product intelligence pipelines.*
+
+---
+## 📌 Project Overview
+
+The Feedback Intelligence Engine takes unstructured user feedback and processes it through a multi-agent pipeline to generate:
+
+1. **Structured feedback classification**
+2. **Theme and pattern detection**
+3. **Executive-style product insight memos**
+4. **System-level risk evaluation**
+
+The system runs fully locally using a local LLM (via Ollama), and includes both:
+
+- **Manual Python orchestration** — learning version
+- **LangGraph-based orchestration** — structured production-style flow
+- **A Streamlit-based UI** — for real-time demonstration
+
+---
+
+## 💡 Why This Project Exists
+
+As an individual exploring AI systems, I wanted to understand:
+
+- How LLMs can return structured JSON outputs
+- How to build tool-like agents around models
+- How to orchestrate multi-agent pipelines
+- How to translate raw feedback into product-level insights
+- How control flow differs from business logic in AI systems
+
+---
+
+## 🏗️ System Architecture
+
+### High-Level Flow
+
+```
+Raw Feedback
+    → Agent 1 (Feedback Analyzer)
+    → Agent 2 (Pattern Detector)
+    → Agent 3 (Insight Generator)
+    → Evaluation Layer
+    → Product Intelligence Output
+```
+
+---
+
+## 🤖 Agent Breakdown
+
+### Agent 1 – Feedback Analyzer
+
+Responsible for converting raw user text into structured format:
+
+- Problem
+- Sentiment
+- Category
+- Priority
+
+**Key Learnings:**
+- Enforcing JSON output from LLM
+- Handling parsing failures
+- Designing classification schema
+
+---
+
+### Agent 2 – Pattern Detector
+
+Takes structured outputs from Agent 1 and:
+
+- Groups similar problems
+- Detects recurring themes
+- Calculates category distribution
+- Calculates priority distribution
+- Counts high-priority items
+
+**Key Learnings:**
+- Batch analysis logic
+- Theme clustering
+- Product-level signal extraction
+
+---
+
+### Agent 3 – Insight Generator
+
+Transforms pattern analysis into:
+
+- Executive summary
+- Risk areas
+- Dominant themes
+- Actionable recommendations
+
+**Key Learnings:**
+- Converting data signals into product memos
+- Translating system metrics into business insights
+
+---
+
+### Evaluation Layer
+
+Adds meta-analysis to the system:
+
+- Risk level classification
+- Signal strength assessment
+- Theme concentration analysis
+- Bug volume tracking
+
+**Key Learnings:**
+- System-level thinking
+- Product health interpretation
+- Risk framing
+
+---
+
+## ⚙️ Orchestration Approaches
+
+### 1. Manual Python Orchestration *(Learning Reference)*
+
+- Sequential execution
+- Direct function calls
+- Clear, readable logic
+
+> **Purpose:** To deeply understand pipeline flow before introducing orchestration frameworks.
+
+### 2. LangGraph Orchestration *(Primary Version)*
+
+- Nodes represent agents
+- Edges define execution flow
+- State acts as shared memory
+- Control flow separated from business logic
+
+> **Purpose:** To model scalable multi-agent orchestration similar to production systems.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Language | Python |
+| Local LLM Runtime | Ollama |
+| Model | Llama3 |
+| Orchestration | LangGraph |
+| UI | Streamlit |
+| Version Control | Git / GitHub |
+
+---
+
+## 🖥️ UI Layer
+
+Built with **Streamlit** to:
+
+- Accept real-time feedback input
+- Run the full agent pipeline
+- Display:
+  - Pattern analysis
+  - Insight memo
+  - System evaluation
+- Enable downloadable report *(optional enhancement)*
+
+This allows the project to be demonstrated as a working AI product prototype.
+
+---
+
+## 📚 Key Learnings
+
+Through this project, I learned:
+
+- How LLMs can be used as structured tools
+- Why JSON enforcement is critical for reliability
+- How to design multi-agent systems
+- Difference between orchestration and business logic
+- How local LLM deployment differs from API-based usage
+- How to debug environment and dependency conflicts
+- How to think about AI systems from a product perspective
+
+---
+
+## 🔍 What This Is (and What It Is Not)
+
+**This is:**
+- A learning-driven AI product prototype
+- A structured exploration of multi-agent design
+- A product-oriented AI system experiment
+
+**This is not:**
+- A production-ready SaaS system
+- A fine-tuned ML model
+- A fully scalable infrastructure system
+
+---
+
+## 🚀 Future Enhancements
+
+- [ ] Replace rule-based theme grouping with embedding-based clustering
+- [ ] Add persistent storage for historical feedback
+- [ ] Deploy UI to a cloud platform
+- [ ] Add real-time analytics dashboard
+- [ ] Add API layer for external integrations
+
+---
+
+## 👤 Author
+
+An individual exploring AI systems and multi-agent product design.
+This repository reflects hands-on experimentation and structured learning in AI-powered product intelligence.

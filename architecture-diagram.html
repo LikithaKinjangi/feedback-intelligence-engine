@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feedback Intelligence Engine – Architecture</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #0a0c10;
+            --surface: #111318;
+            --border: #1e2230;
+            --accent: #00e5ff;
+            --accent2: #7c3aed;
+            --accent3: #10b981;
+            --accent4: #f59e0b;
+            --accent5: #ef4444;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --card: #13161f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            padding: 48px 32px;
+            overflow-x: hidden;
+        }
+
+        /* Subtle grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 56px;
+            animation: fadeDown 0.7s ease both;
+        }
+
+        .header .badge {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            border-radius: 2px;
+            padding: 4px 12px;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: clamp(26px, 4vw, 42px);
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        /* ── Pipeline ── */
+        .pipeline {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            align-items: center;
+        }
+
+        /* Input block */
+        .input-block {
+            width: 100%;
+            max-width: 680px;
+            animation: fadeUp 0.5s ease 0.1s both;
+        }
+
+        .input-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--accent);
+            border-radius: 10px;
+            padding: 20px 28px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .input-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(0, 229, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .input-label {
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .input-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* Arrow */
+        .arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            padding: 4px 0;
+        }
+
+        .arrow-line {
+            width: 2px;
+            height: 28px;
+            background: linear-gradient(to bottom, var(--accent), rgba(0, 229, 255, 0.2));
+        }
+
+        .arrow-head {
+            width: 0;
+            height: 0;
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-top: 10px solid rgba(0, 229, 255, 0.5);
+        }
+
+        /* Agents row */
+        .agents-row {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            animation: fadeUp 0.5s ease 0.3s both;
+        }
+
+        .agent-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 22px 20px;
+            position: relative;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: default;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .agent-1::before {
+            background: var(--accent);
+        }
+
+        .agent-2::before {
+            background: var(--accent2);
+        }
+
+        .agent-3::before {
+            background: var(--accent3);
+        }
+
+        .agent-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .agent-1 .agent-num {
+            color: var(--accent);
+        }
+
+        .agent-2 .agent-num {
+            color: var(--accent2);
+        }
+
+        .agent-3 .agent-num {
+            color: var(--accent3);
+        }
+
+        .agent-name {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .agent-outputs {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            width: fit-content;
+        }
+
+        .tag-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .agent-1 .tag {
+            background: rgba(0, 229, 255, 0.07);
+            color: rgba(0, 229, 255, 0.8);
+        }
+
+        .agent-1 .tag-dot {
+            background: var(--accent);
+        }
+
+        .agent-2 .tag {
+            background: rgba(124, 58, 237, 0.1);
+            color: rgba(167, 139, 250, 0.9);
+        }
+
+        .agent-2 .tag-dot {
+            background: var(--accent2);
+        }
+
+        .agent-3 .tag {
+            background: rgba(16, 185, 129, 0.08);
+            color: rgba(52, 211, 153, 0.9);
+        }
+
+        .agent-3 .tag-dot {
+            background: var(--accent3);
+        }
+
+        /* Connector row between input and agents */
+        .connector {
+            width: 100%;
+            max-width: 860px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            position: relative;
+            height: 40px;
+            animation: fadeIn 0.4s ease 0.25s both;
+        }
+
+        .connector svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        /* Eval + UI row */
+        .bottom-row {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            animation: fadeUp 0.5s ease 0.55s both;
+        }
+
+        .eval-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 22px 20px;
+            position: relative;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: default;
+        }
+
+        .eval-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .eval-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .eval-card.eval::before {
+            background: var(--accent4);
+        }
+
+        .eval-card.ui::before {
+            background: var(--accent5);
+        }
+
+        .eval-card .agent-num {
+            color: var(--accent4);
+        }
+
+        .eval-card.ui .agent-num {
+            color: var(--accent5);
+        }
+
+        .eval-card .tag {
+            background: rgba(245, 158, 11, 0.08);
+            color: rgba(251, 191, 36, 0.9);
+        }
+
+        .eval-card .tag-dot {
+            background: var(--accent4);
+        }
+
+        .eval-card.ui .tag {
+            background: rgba(239, 68, 68, 0.08);
+            color: rgba(252, 165, 165, 0.9);
+        }
+
+        .eval-card.ui .tag-dot {
+            background: var(--accent5);
+        }
+
+        /* Merge arrow above eval row */
+        .merge-arrow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            height: 44px;
+            width: 100%;
+            animation: fadeIn 0.4s ease 0.5s both;
+        }
+
+        .merge-arrow svg {
+            width: 100%;
+            max-width: 860px;
+            height: 44px;
+            overflow: visible;
+        }
+
+        /* Orchestration section */
+        .orch-section {
+            margin-top: 48px;
+            animation: fadeUp 0.5s ease 0.7s both;
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 16px;
+            padding-left: 4px;
+        }
+
+        .orch-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .orch-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px 22px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            transition: transform 0.2s ease;
+            cursor: default;
+        }
+
+        .orch-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .orch-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .orch-icon.py {
+            background: rgba(0, 229, 255, 0.08);
+        }
+
+        .orch-icon.lg {
+            background: rgba(124, 58, 237, 0.1);
+        }
+
+        .orch-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .orch-desc {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* Tech stack strip */
+        .tech-strip {
+            margin-top: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            animation: fadeUp 0.5s ease 0.8s both;
+        }
+
+        .tech-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            padding: 6px 14px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            background: var(--surface);
+            letter-spacing: 0.5px;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .tech-badge:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Animations */
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+
+            .agents-row,
+            .bottom-row,
+            .orch-row {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 32px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="badge">Architecture Diagram</div>
+            <h1>🧠 Feedback Intelligence Engine</h1>
+            <p>// multi-agent AI pipeline · local LLM · structured product intelligence</p>
+        </div>
+
+        <div class="pipeline">
+
+            <!-- INPUT -->
+            <div class="input-block">
+                <div class="input-card">
+                    <div class="input-icon">📥</div>
+                    <div>
+                        <div class="input-label">Entry Point</div>
+                        <div class="input-title">Raw User Feedback</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connector: 1 → 3 -->
+            <div class="connector" style="max-width:860px;">
+                <svg viewBox="0 0 860 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="lg1" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.7" />
+                            <stop offset="100%" stop-color="#00e5ff" stop-opacity="0.2" />
+                        </linearGradient>
+                    </defs>
+                    <!-- center line down -->
+                    <line x1="430" y1="0" x2="430" y2="18" stroke="url(#lg1)" stroke-width="2" />
+                    <!-- horizontal spread -->
+                    <line x1="143" y1="18" x2="717" y2="18" stroke="rgba(0,229,255,0.25)" stroke-width="1.5" />
+                    <!-- drop lines to each agent -->
+                    <line x1="143" y1="18" x2="143" y2="40" stroke="rgba(0,229,255,0.4)" stroke-width="1.5" />
+                    <line x1="430" y1="18" x2="430" y2="40" stroke="rgba(124,58,237,0.5)" stroke-width="1.5" />
+                    <line x1="717" y1="18" x2="717" y2="40" stroke="rgba(16,185,129,0.4)" stroke-width="1.5" />
+                    <!-- arrowheads -->
+                    <polygon points="139,38 147,38 143,46" fill="rgba(0,229,255,0.5)" />
+                    <polygon points="426,38 434,38 430,46" fill="rgba(124,58,237,0.6)" />
+                    <polygon points="713,38 721,38 717,46" fill="rgba(16,185,129,0.5)" />
+                </svg>
+            </div>
+
+            <!-- AGENTS ROW -->
+            <div class="agents-row">
+
+                <div class="agent-card agent-1">
+                    <div class="agent-num">Agent 01</div>
+                    <div class="agent-name">Feedback Analyzer</div>
+                    <div class="agent-outputs">
+                        <div class="tag"><span class="tag-dot"></span>Problem</div>
+                        <div class="tag"><span class="tag-dot"></span>Sentiment</div>
+                        <div class="tag"><span class="tag-dot"></span>Category</div>
+                        <div class="tag"><span class="tag-dot"></span>Priority</div>
+                    </div>
+                </div>
+
+                <div class="agent-card agent-2">
+                    <div class="agent-num">Agent 02</div>
+                    <div class="agent-name">Pattern Detector</div>
+                    <div class="agent-outputs">
+                        <div class="tag"><span class="tag-dot"></span>Theme Clusters</div>
+                        <div class="tag"><span class="tag-dot"></span>Category Distribution</div>
+                        <div class="tag"><span class="tag-dot"></span>Priority Distribution</div>
+                        <div class="tag"><span class="tag-dot"></span>High-Priority Count</div>
+                    </div>
+                </div>
+
+                <div class="agent-card agent-3">
+                    <div class="agent-num">Agent 03</div>
+                    <div class="agent-name">Insight Generator</div>
+                    <div class="agent-outputs">
+                        <div class="tag"><span class="tag-dot"></span>Executive Summary</div>
+                        <div class="tag"><span class="tag-dot"></span>Risk Areas</div>
+                        <div class="tag"><span class="tag-dot"></span>Dominant Themes</div>
+                        <div class="tag"><span class="tag-dot"></span>Recommendations</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Merge arrow down to eval+ui -->
+            <div class="merge-arrow">
+                <svg viewBox="0 0 860 44" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="lg2" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.5" />
+                            <stop offset="100%" stop-color="#a78bfa" stop-opacity="0.15" />
+                        </linearGradient>
+                    </defs>
+                    <!-- rise lines from each agent -->
+                    <line x1="143" y1="0" x2="143" y2="22" stroke="rgba(0,229,255,0.35)" stroke-width="1.5" />
+                    <line x1="430" y1="0" x2="430" y2="22" stroke="rgba(124,58,237,0.45)" stroke-width="1.5" />
+                    <line x1="717" y1="0" x2="717" y2="22" stroke="rgba(16,185,129,0.35)" stroke-width="1.5" />
+                    <!-- merge horizontal -->
+                    <line x1="143" y1="22" x2="717" y2="22" stroke="rgba(167,139,250,0.25)" stroke-width="1.5" />
+                    <!-- center drop -->
+                    <line x1="430" y1="22" x2="430" y2="44" stroke="url(#lg2)" stroke-width="2" />
+                    <!-- arrow at split point to two cards -->
+                    <line x1="215" y1="36" x2="645" y2="36" stroke="rgba(167,139,250,0.2)" stroke-width="1.5" />
+                    <line x1="215" y1="36" x2="215" y2="44" stroke="rgba(245,158,11,0.4)" stroke-width="1.5" />
+                    <line x1="645" y1="36" x2="645" y2="44" stroke="rgba(239,68,68,0.4)" stroke-width="1.5" />
+                    <polygon points="211,42 219,42 215,50" fill="rgba(245,158,11,0.5)" />
+                    <polygon points="641,42 649,42 645,50" fill="rgba(239,68,68,0.5)" />
+                </svg>
+            </div>
+
+            <!-- EVAL + UI -->
+            <div class="bottom-row">
+
+                <div class="eval-card eval">
+                    <div class="agent-num">Evaluation Layer</div>
+                    <div class="agent-name">System Health</div>
+                    <div class="agent-outputs">
+                        <div class="tag"><span class="tag-dot"></span>Risk Level</div>
+                        <div class="tag"><span class="tag-dot"></span>Signal Strength</div>
+                        <div class="tag"><span class="tag-dot"></span>Bug Volume</div>
+                        <div class="tag"><span class="tag-dot"></span>Theme Concentration</div>
+                    </div>
+                </div>
+
+                <div class="eval-card ui">
+                    <div class="agent-num">UI Layer</div>
+                    <div class="agent-name">Streamlit Dashboard</div>
+                    <div class="agent-outputs">
+                        <div class="tag"><span class="tag-dot"></span>Real-time Input</div>
+                        <div class="tag"><span class="tag-dot"></span>Pattern Metrics</div>
+                        <div class="tag"><span class="tag-dot"></span>Insight Memo</div>
+                        <div class="tag"><span class="tag-dot"></span>Downloadable Report</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div><!-- end pipeline -->
+
+        <!-- Orchestration -->
+        <div class="orch-section">
+            <div class="section-label">// Orchestration Approaches</div>
+            <div class="orch-row">
+                <div class="orch-card">
+                    <div class="orch-icon py">🐍</div>
+                    <div>
+                        <div class="orch-title">Manual Python</div>
+                        <div class="orch-desc">Sequential · Direct function calls · Learning reference · Foundational
+                            control flow</div>
+                    </div>
+                </div>
+                <div class="orch-card">
+                    <div class="orch-icon lg">🔗</div>
+                    <div>
+                        <div class="orch-title">LangGraph</div>
+                        <div class="orch-desc">Nodes → Agents · Edges → Flow · State = Shared memory · Business logic
+                            separated</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech stack -->
+        <div class="tech-strip">
+            <span class="tech-badge">Python</span>
+            <span class="tech-badge">Ollama</span>
+            <span class="tech-badge">Llama 3</span>
+            <span class="tech-badge">LangGraph</span>
+            <span class="tech-badge">Streamlit</span>
+            <span class="tech-badge">Local LLM</span>
+            <span class="tech-badge">Git / GitHub</span>
+        </div>
+
+    </div>
+</body>
+
+</html>
